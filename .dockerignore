@@ -1,0 +1,9 @@
+.git
+.gitmodule
+temp
+orgdocs
+policies
+clair-config
+Makefile
+bom.spdx
+workdir

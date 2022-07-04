@@ -1,0 +1,79 @@
+---
+profile:
+  name: "Container Policy Rules"
+  description: "FinShare Container Policy Rules"
+
+line_rules:
+
+  FROM: 
+    parmaSyntaxRegex: /^[\w./\-:]+(:[\w.]+)?(-[\w]+)?( as \w+)?$/i
+    rules: 
+      - 
+        label: "is_latest_tag"
+        regex: /latest/
+        level: "error"
+        message: "base image uses 'latest' tag"
+        description: "using the 'latest' tag may cause unpredictable builds. It is recommended that a specific tag is used in the FROM line or *-released which is the latest supported release."
+        reference_url: 
+          - "https://docs.docker.com/engine/reference/builder/"
+          - "#from"
+
+      - 
+        label: "no_tag"
+        regex: /^[:]/
+        level: "error"
+        message: "No tag is used"
+        description: "No tag is used. It is recommended that a specific tag is used in the FROM line or *-released which is the latest supported release."
+        reference_url: 
+          - "https://docs.docker.com/engine/reference/builder/"
+          - "#from"
+
+  LABEL:
+    paramSyntaxRegex: /.+/
+
+    # Use defined_label_rules to define a set of labels for your dockerfile
+
+    # A label value is 'valid' if it matches the regular expression 'valueRegex',
+    # otherwise a warning is logged with the string "message" at level 'level'.
+    # 'reference_url' provides a web link where the user can get more information
+    # about the rule.
+
+    defined_namevals:
+      maintainer:
+        valueRegex: /[\w]+/
+        message: "Label 'maintainer' is missing or has invalid format"
+        level: "warn"
+        required: true
+        reference_url:
+
+  HEALTHCHECK:
+    parmaSyntaxRegex: /.+/
+    rules:
+      - label: "dont_use_curl"
+        regex: /curl/
+        level: "error"
+        message: "Do not use 'curl' in healthcheck"
+        description: "'curl' may not be available in certain containers"
+        reference_url:
+          - "https://blog.sixeyed.com/docker-healthchecks-why-not-to-use-curl-or-iwr/"
+
+required_instructions:
+  -
+    instruction: "LABEL"
+    count: 1
+    description: "Labels are needed because...."
+    level: error
+    message: "No LABELs are defined"
+    reference_url:
+      - "https://docs.docker.com/engine/reference/builder/"
+      - "#label"
+
+  -
+    instruction: "HEALTHCHECK"
+    count: 1
+    level: "error"
+    message: "There is no 'HEALTHCHECK' instruction"
+    description: "Healthchecks are required to ensure the container is useable"
+    reference_url:
+      - "https://docs.docker.com/engine/reference/builder/"
+      - "#healthcheck"

@@ -1,0 +1,70 @@
+---
+profile:
+  name: "OCI Image Spec Annotations"
+  description: "FinShare OCI Image Spec Annotations"
+
+line_rules:
+
+  LABEL:
+    paramSyntaxRegex: /.+/
+
+    # Use defined_label_rules to define a set of labels for your dockerfile
+
+    # OCI (Open Container Initiative) Image Spec Annotations
+    #   - https://github.com/opencontainers/image-spec/blob/master/annotations.md
+    # The OCI Image Spec Annotations deprecated the Label Schema Labels
+
+    # A label value is 'valid' if it matches the regular expression 'valueRegex',
+    # otherwise a warning is logged with the string "message" at level 'level'.
+    # 'reference_url' provides a web link where the user can get more information
+    # about the rule.
+       
+    defined_namevals:
+
+      'org.opencontainers.image.create_date':
+         valueRegex: /\$CREATE_DATE$/
+         message: "Label 'org.opencontainers.image.create_date' is missing or has invalid format"
+         level: "warn"
+         required: true
+         reference_url:
+           - "https://github.com/opencontainers/image-spec/blob/master/annotations.md"
+
+      'org.opencontainers.image.title':
+         valueRegex: /[\w]+/
+         message: "Label 'org.opencontainers.image.name' is missing or has invalid format"
+         level: "warn"
+         required: true 
+         reference_url:
+           - "https://github.com/opencontainers/image-spec/blob/master/annotations.md"
+
+      'org.opencontainers.image.source':
+         valueRegex: /([\w]+).+/
+         message: "Label 'org.opencontainers.image.source' is missing or has invalid format"
+         level: "warn"
+         required: true
+         reference_url:
+           - "https://github.com/opencontainers/image-spec/blob/master/annotations.md"
+
+      'org.opencontainers.image.revision':
+         valueRegex: /\$REVISION$/
+         message: "Label 'org.opencontainers.image.revision' is missing or has invalid format"
+         level: "warn"
+         required: true
+         reference_url:
+           - "https://github.com/opencontainers/image-spec/blob/master/annotations.md"
+
+      'org.opencontainers.image.version':
+         valueRegex: /\$BUILD_VERSION$/
+         message: "Label 'org.opencontainers.image.version' is missing or has invalid format"
+         level: "warn"
+         required: true
+         reference_url:
+           - "https://github.com/opencontainers/image-spec/blob/master/annotations.md"
+
+      'org.opencontainers.image.licenses':
+        valueRegex: /^(Apache\-2\.0|LGPL\-3\.0\-only|MIT|UNLICENSED)$/ 
+        message: "Label 'org.opencontainers.image.licenses' is missing or has invalid format"
+        level: "warn"
+        required: true
+        references_url:
+          - "https://github.com/opencontainers/image-spec/blob/master/annotations.md" 
